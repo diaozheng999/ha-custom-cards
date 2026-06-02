@@ -2,5 +2,6 @@ packages:
   - 'packages/*'
 
 allowBuilds:
+  core-js: false
   esbuild: true
   nx: true
