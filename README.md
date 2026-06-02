@@ -15,7 +15,7 @@ packages/
     dist/             # Built output (committed for HA consumption)
     package.json
     project.json      # NX project config
-    vite.config.ts
+    rsbuild.config.ts
     tsconfig.json
     AGENTS.md         # Card-specific agent guidance
     README.md         # Card docs, config reference, screenshots

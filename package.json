@@ -9,11 +9,10 @@
   "devDependencies": {
     "@nx/eslint": "latest",
     "@nx/js": "latest",
-    "@nx/vite": "latest",
+    "@nx/rsbuild": "latest",
     "eslint": "^9",
     "nx": "latest",
     "prettier": "^3",
-    "typescript": "~5.5",
-    "vite": "^6"
+    "typescript": "~5.5"
   }
 }

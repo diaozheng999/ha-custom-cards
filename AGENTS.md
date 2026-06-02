@@ -36,8 +36,8 @@ Use lowercase. The editor is the tool (e.g. `claude code`, `cursor`, `antigravit
 
 - **Package manager:** pnpm with workspaces (`pnpm-workspace.yaml`)
 - **Monorepo orchestration:** NX — task caching, dependency graph, `run-many`
-- **Bundler per card:** Vite (`@nx/vite`) producing a single flat JS file for HA consumption
-- **TypeScript:** root `tsconfig.base.json` (strict, ESNext, bundler module resolution); each package extends it
+- **Bundler per card:** Rsbuild (`@nx/rsbuild`) producing a single flat JS file for HA consumption
+- **TypeScript:** root `tsconfig.base.json` (strict, ESNext, bundler module resolution); each package extends it; type-checking via `tsc --noEmit` (separate from the build)
 - **Lint:** ESLint 9 flat config (`eslint.config.js`) with `@nx/eslint-plugin`
 - **Format:** Prettier (`.prettierrc`)
 
@@ -48,6 +48,54 @@ pnpm build                         # build all packages
 pnpm exec nx build <card-name>     # build one card
 pnpm exec nx show projects         # list all NX projects
 pnpm exec nx graph                 # visualise dependency graph
+```
+
+### New card package template
+
+Each `packages/<card>/` needs three files:
+
+**`project.json`**
+```json
+{
+  "name": "<card>",
+  "targets": {
+    "build": {
+      "executor": "@nx/rsbuild:build",
+      "options": { "rsbuildConfig": "packages/<card>/rsbuild.config.ts" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc --noEmit -p packages/<card>/tsconfig.json" }
+    }
+  }
+}
+```
+
+**`rsbuild.config.ts`**
+```ts
+import { defineConfig } from '@rsbuild/core';
+
+export default defineConfig({
+  source: { entry: { index: './src/index.ts' } },
+  output: {
+    distPath: { root: 'dist' },
+    filename: { js: '[name].js' },
+    minify: true,
+  },
+  tools: {
+    bundlerChain(chain) {
+      chain.output.library({ type: 'iife' });
+    },
+  },
+});
+```
+
+**`tsconfig.json`**
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src"]
+}
 ```
 
 ## AGENTS.md hierarchy
