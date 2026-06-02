@@ -22,3 +22,11 @@ Thumbs.db
 # Card dist files ARE committed (HA loads them directly), so do not ignore dist/.
 # If you add non-card packages that should not commit dist, add a local .gitignore
 # inside that package folder.
+
+.nx/polygraph
+.claude
+.agents
+opencode.json
+.codex
+.github
+.opencode
