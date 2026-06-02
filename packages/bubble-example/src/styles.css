@@ -1,0 +1,8 @@
+/* Module styles. Use [[expr]] for Bubble Card runtime template expressions.
+   The build plugin converts [[expr]] → ${expr} before embedding in the YAML code field.
+   Do NOT write ${...} directly — PostCSS will reject it. */
+
+.bubble-example--active .bubble-icon-container {
+  background: var(--bubble-example-color, var(--primary-color)) !important;
+  opacity: 1 !important;
+}

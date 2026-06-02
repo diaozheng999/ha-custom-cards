@@ -10,9 +10,12 @@
     "@nx/eslint": "latest",
     "@nx/js": "latest",
     "@nx/rsbuild": "latest",
+    "@rsbuild/core": "^1",
     "eslint": "^9",
+    "home-assistant-frontend-types": "^2026.4.29",
     "nx": "latest",
     "prettier": "^3",
-    "typescript": "~5.5"
+    "typescript": "~5.5",
+    "yaml": "^2"
   }
 }

@@ -102,20 +102,97 @@ export default defineConfig({
 }
 ```
 
+### New bubble card module template
+
+Bubble Card modules live under `packages/bubble-<name>/` and compile TypeScript + CSS to
+`dist/module.yaml` via a custom Rsbuild pipeline. Use `packages/bubble-example/` as the
+reference implementation.
+
+Each `packages/bubble-<name>/` needs these files:
+
+**`module.json`** — module metadata (id, name, version, creator, editor fields, etc.)
+
+**`project.json`**
+```json
+{
+  "name": "bubble-<name>",
+  "targets": {
+    "build": {
+      "executor": "@nx/rsbuild:build",
+      "options": { "rsbuildConfig": "packages/bubble-<name>/rsbuild.config.ts" },
+      "outputs": ["{projectRoot}/.tmp", "{projectRoot}/dist"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc --noEmit -p packages/bubble-<name>/tsconfig.json" }
+    }
+  }
+}
+```
+
+**`rsbuild.config.ts`**
+```ts
+import path from 'node:path'
+import { defineConfig } from '@rsbuild/core'
+import { pluginBubbleYaml } from '../../tools/bubble-yaml-plugin'
+
+export default defineConfig({
+  source: { entry: { index: './src/index.ts' } },
+  output: {
+    distPath: { root: '.tmp' },
+    filename: { js: '[name].js', css: '[name].css' },
+    minify: true,
+    filenameHash: false,
+    injectStyles: false,
+  },
+  tools: {
+    bundlerChain(chain) { chain.output.library({ type: 'iife' }) },
+  },
+  plugins: [pluginBubbleYaml(path.resolve(__dirname))],
+})
+```
+
+**`tsconfig.json`**
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "types": [], "skipLibCheck": true },
+  "include": ["src", "../../tools/bubble-card.d.ts"]
+}
+```
+
+**`src/env.d.ts`** — narrows `thisCard` to this module's config type:
+```ts
+import type { BubbleCardThis } from '../../../tools/bubble-card'
+interface ModuleConfig { /* editor field types */ }
+declare const thisCard: BubbleCardThis<{ <module_id>?: ModuleConfig }>
+```
+
+**CSS import**: `src/styles.css` must be imported in `src/index.ts` (`import './styles.css'`)
+for Rsbuild to pick it up and extract it to `.tmp/index.css`.
+
+**CSS template expressions**: write `[[expr]]` in `.css` files where Bubble Card runtime
+expressions are needed (e.g. `[[this.config.mod?.color]]`). The build plugin converts
+`[[expr]]` → `${expr}`. Do NOT write `${...}` directly in CSS files — PostCSS rejects it.
+
+**Runtime globals**: `state`, `entity`, `icon`, `card`, `hass`, `thisCard` — see
+`tools/bubble-card.d.ts` for full types.
+
 ## AGENTS.md hierarchy
 
 Context is layered — always read outward from where you are:
 
 ```
-/AGENTS.md                          ← repo-wide rules (this file)
-/bubble-modules/AGENTS.md           ← Bubble Card YAML module authoring (no build)
-/packages/<card>/AGENTS.md          ← card-specific rules and gotchas
+/AGENTS.md                            ← repo-wide rules (this file)
+/bubble-modules/AGENTS.md             ← hand-authored Bubble Card YAML modules (no build)
+/packages/<card>/AGENTS.md            ← HA card-specific rules and gotchas
+/packages/bubble-<name>/AGENTS.md     ← compiled Bubble Card module rules and gotchas
 ```
 
 - When working inside a package, read **both** that package's `AGENTS.md` and this root file. The root takes precedence on cross-cutting concerns (commit format, security, HA conventions); the package file specialises or adds to it.
 - The root `AGENTS.md` must not duplicate package-level detail.
 - Each `packages/<card>/AGENTS.md` should describe: what the card does, which HA entities/domains it targets, any non-obvious build constraints (e.g. output must be a single flat JS file), and known gotchas.
-- `bubble-modules/` is YAML-only and not an NX project — its `AGENTS.md` is self-contained.
+- `bubble-modules/` is for hand-authored YAML only — not an NX project. For TypeScript-compiled modules use `packages/bubble-<name>/` instead.
 
 ## What to fill in later
 

@@ -1,0 +1,17 @@
+bubble-example:
+  name: Example Module
+  version: v1.0
+  creator: Your Name
+  description: A short description shown in the Module Editor.
+  unsupported:
+    - horizontal-buttons-stack
+    - separator
+  code: |-
+    .bubble-example--active .bubble-icon-container{background:var(--bubble-example-color,var(--primary-color))!important;opacity:1!important}
+    ${(function(thisCard){(()=>{"use strict";let e=thisCard.config.bubble_example;card&&(card.classList.toggle("bubble-example--active","on"===state),(null==e?void 0:e.color)&&card.style.setProperty("--bubble-example-color",`var(--${e.color}-color)`))})();})(this)}
+  editor:
+    - name: color
+      label: Accent color
+      selector:
+        ui_color:
+          include_none: true

@@ -1,0 +1,14 @@
+{
+  "name": "bubble-example",
+  "targets": {
+    "build": {
+      "outputs": ["{projectRoot}/.tmp", "{projectRoot}/dist"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p packages/bubble-example/tsconfig.json"
+      }
+    }
+  }
+}

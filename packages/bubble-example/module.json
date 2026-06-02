@@ -1,0 +1,19 @@
+{
+  "id": "bubble-example",
+  "name": "Example Module",
+  "version": "v1.0",
+  "creator": "Your Name",
+  "description": "A short description shown in the Module Editor.",
+  "unsupported": ["horizontal-buttons-stack", "separator"],
+  "editor": [
+    {
+      "name": "color",
+      "label": "Accent color",
+      "selector": {
+        "ui_color": {
+          "include_none": true
+        }
+      }
+    }
+  ]
+}
