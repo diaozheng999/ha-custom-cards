@@ -19,9 +19,9 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Card dist files ARE committed (HA loads them directly), so do not ignore dist/.
-# If you add non-card packages that should not commit dist, add a local .gitignore
-# inside that package folder.
+# Per-package dist and tmp folders are build artifacts — not committed.
+packages/*/dist/
+packages/*/.tmp/
 
 .nx/polygraph
 .claude
