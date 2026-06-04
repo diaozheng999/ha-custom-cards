@@ -1,0 +1,38 @@
+{
+  "id": "frigate_player",
+  "name": "Frigate Video Player",
+  "version": "v1.0",
+  "creator": "Diao Zheng",
+  "description": "Plays a Frigate clip URL passed as a query parameter (e.g. <code>?video=…</code>).",
+  "unsupported": ["horizontal-buttons-stack", "separator"],
+  "editor": [
+    {
+      "name": "param",
+      "label": "URL query parameter",
+      "selector": {
+        "text": {}
+      }
+    },
+    {
+      "name": "autoplay",
+      "label": "Autoplay",
+      "selector": {
+        "boolean": {}
+      }
+    },
+    {
+      "name": "muted",
+      "label": "Muted",
+      "selector": {
+        "boolean": {}
+      }
+    },
+    {
+      "name": "loop",
+      "label": "Loop",
+      "selector": {
+        "boolean": {}
+      }
+    }
+  ]
+}
